@@ -1,41 +1,48 @@
 import express from 'express';
-import cors from 'cors';
+import bodyParser from 'body-parser';
+import cors from 'cors';  // <--- add this import
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { spawn } from 'child_process';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
-app.use(cors());          
-app.use(express.json());    
 
-const port = 5000;
+app.use(cors());  // <--- enable CORS
+app.use(bodyParser.json());
 
+app.post('/parse', (req, res) => {
+  const nlqpPath = path.join(__dirname, '../compiler/nlqp.exe');
+  console.log('Running executable at:', nlqpPath);
 
-app.post('/nlqp', (req, res) => {
-  const query = req.body.query; 
+  const nlqpProcess = spawn(nlqpPath);
 
-  const cProgram = spawn('compiler\main.c');  
+  nlqpProcess.on('error', (err) => {
+    console.error('Failed to start subprocess:', err);
+    res.status(500).send('Internal server error running nlqp');
+  });
 
   let output = '';
-
-  
-  cProgram.stdin.write(query + '\n');
-  cProgram.stdin.end();  
-  
-  cProgram.stdout.on('data', (data) => {
-    output += data.toString(); 
+  nlqpProcess.stdout.on('data', (data) => {
+    output += data.toString();
   });
 
- 
-  cProgram.stderr.on('data', (err) => {
-    console.error('Error from C program:', err.toString());
+  nlqpProcess.stderr.on('data', (data) => {
+    console.error('Error from nlqp:', data.toString());
   });
 
-  
-  cProgram.on('close', (code) => {
-    console.log(`C program exited with code ${code}`);
-    res.json({ sql: output.trim() });  
+  nlqpProcess.on('close', (code) => {
+    console.log(`nlqp process exited with code ${code}`);
+    res.send(output);
   });
+
+  nlqpProcess.stdin.write(req.body.query);
+  nlqpProcess.stdin.end();
 });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+const PORT = 5000;
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
 });

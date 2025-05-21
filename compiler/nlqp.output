@@ -1,0 +1,338 @@
+Terminals unused in grammar
+
+   IS
+
+
+State 29 conflicts: 2 shift/reduce
+State 30 conflicts: 2 shift/reduce
+
+
+Grammar
+
+    0 $accept: query $end
+
+    1 query: SHOW ALL FROM IDENTIFIER WHERE condition_expr
+    2      | SHOW ALL FROM IDENTIFIER
+
+    3 condition_expr: IDENTIFIER comparator value
+    4               | condition_expr AND condition_expr
+    5               | condition_expr OR condition_expr
+
+    6 comparator: GT
+    7           | LT
+    8           | EQ
+    9           | NE
+   10           | GE
+   11           | LE
+   12           | GREATER THAN
+   13           | LESS THAN
+   14           | EQUAL
+   15           | NOT EQUAL
+
+   16 value: NUMBER
+   17      | STRING
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+SHOW (258) 1 2
+ALL (259) 1 2
+FROM (260) 1 2
+WHERE (261) 1
+IS (262)
+GREATER (263) 12
+LESS (264) 13
+THAN (265) 12 13
+EQUAL (266) 14 15
+NOT (267) 15
+AND (268) 4
+OR (269) 5
+GE (270) 10
+LE (271) 11
+NE (272) 9
+GT (273) 6
+LT (274) 7
+EQ (275) 8
+IDENTIFIER (276) 1 2 3
+STRING (277) 17
+NUMBER (278) 16
+
+
+Nonterminals, with rules where they appear
+
+$accept (24)
+    on left: 0
+query (25)
+    on left: 1 2, on right: 0
+condition_expr (26)
+    on left: 3 4 5, on right: 1 4 5
+comparator (27)
+    on left: 6 7 8 9 10 11 12 13 14 15, on right: 3
+value (28)
+    on left: 16 17, on right: 3
+
+
+state 0
+
+    0 $accept: . query $end
+
+    SHOW  shift, and go to state 1
+
+    query  go to state 2
+
+
+state 1
+
+    1 query: SHOW . ALL FROM IDENTIFIER WHERE condition_expr
+    2      | SHOW . ALL FROM IDENTIFIER
+
+    ALL  shift, and go to state 3
+
+
+state 2
+
+    0 $accept: query . $end
+
+    $end  shift, and go to state 4
+
+
+state 3
+
+    1 query: SHOW ALL . FROM IDENTIFIER WHERE condition_expr
+    2      | SHOW ALL . FROM IDENTIFIER
+
+    FROM  shift, and go to state 5
+
+
+state 4
+
+    0 $accept: query $end .
+
+    $default  accept
+
+
+state 5
+
+    1 query: SHOW ALL FROM . IDENTIFIER WHERE condition_expr
+    2      | SHOW ALL FROM . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 6
+
+
+state 6
+
+    1 query: SHOW ALL FROM IDENTIFIER . WHERE condition_expr
+    2      | SHOW ALL FROM IDENTIFIER .
+
+    WHERE  shift, and go to state 7
+
+    $default  reduce using rule 2 (query)
+
+
+state 7
+
+    1 query: SHOW ALL FROM IDENTIFIER WHERE . condition_expr
+
+    IDENTIFIER  shift, and go to state 8
+
+    condition_expr  go to state 9
+
+
+state 8
+
+    3 condition_expr: IDENTIFIER . comparator value
+
+    GREATER  shift, and go to state 10
+    LESS     shift, and go to state 11
+    EQUAL    shift, and go to state 12
+    NOT      shift, and go to state 13
+    GE       shift, and go to state 14
+    LE       shift, and go to state 15
+    NE       shift, and go to state 16
+    GT       shift, and go to state 17
+    LT       shift, and go to state 18
+    EQ       shift, and go to state 19
+
+    comparator  go to state 20
+
+
+state 9
+
+    1 query: SHOW ALL FROM IDENTIFIER WHERE condition_expr .
+    4 condition_expr: condition_expr . AND condition_expr
+    5               | condition_expr . OR condition_expr
+
+    AND  shift, and go to state 21
+    OR   shift, and go to state 22
+
+    $default  reduce using rule 1 (query)
+
+
+state 10
+
+   12 comparator: GREATER . THAN
+
+    THAN  shift, and go to state 23
+
+
+state 11
+
+   13 comparator: LESS . THAN
+
+    THAN  shift, and go to state 24
+
+
+state 12
+
+   14 comparator: EQUAL .
+
+    $default  reduce using rule 14 (comparator)
+
+
+state 13
+
+   15 comparator: NOT . EQUAL
+
+    EQUAL  shift, and go to state 25
+
+
+state 14
+
+   10 comparator: GE .
+
+    $default  reduce using rule 10 (comparator)
+
+
+state 15
+
+   11 comparator: LE .
+
+    $default  reduce using rule 11 (comparator)
+
+
+state 16
+
+    9 comparator: NE .
+
+    $default  reduce using rule 9 (comparator)
+
+
+state 17
+
+    6 comparator: GT .
+
+    $default  reduce using rule 6 (comparator)
+
+
+state 18
+
+    7 comparator: LT .
+
+    $default  reduce using rule 7 (comparator)
+
+
+state 19
+
+    8 comparator: EQ .
+
+    $default  reduce using rule 8 (comparator)
+
+
+state 20
+
+    3 condition_expr: IDENTIFIER comparator . value
+
+    STRING  shift, and go to state 26
+    NUMBER  shift, and go to state 27
+
+    value  go to state 28
+
+
+state 21
+
+    4 condition_expr: condition_expr AND . condition_expr
+
+    IDENTIFIER  shift, and go to state 8
+
+    condition_expr  go to state 29
+
+
+state 22
+
+    5 condition_expr: condition_expr OR . condition_expr
+
+    IDENTIFIER  shift, and go to state 8
+
+    condition_expr  go to state 30
+
+
+state 23
+
+   12 comparator: GREATER THAN .
+
+    $default  reduce using rule 12 (comparator)
+
+
+state 24
+
+   13 comparator: LESS THAN .
+
+    $default  reduce using rule 13 (comparator)
+
+
+state 25
+
+   15 comparator: NOT EQUAL .
+
+    $default  reduce using rule 15 (comparator)
+
+
+state 26
+
+   17 value: STRING .
+
+    $default  reduce using rule 17 (value)
+
+
+state 27
+
+   16 value: NUMBER .
+
+    $default  reduce using rule 16 (value)
+
+
+state 28
+
+    3 condition_expr: IDENTIFIER comparator value .
+
+    $default  reduce using rule 3 (condition_expr)
+
+
+state 29
+
+    4 condition_expr: condition_expr . AND condition_expr
+    4               | condition_expr AND condition_expr .
+    5               | condition_expr . OR condition_expr
+
+    AND  shift, and go to state 21
+    OR   shift, and go to state 22
+
+    AND       [reduce using rule 4 (condition_expr)]
+    OR        [reduce using rule 4 (condition_expr)]
+    $default  reduce using rule 4 (condition_expr)
+
+
+state 30
+
+    4 condition_expr: condition_expr . AND condition_expr
+    5               | condition_expr . OR condition_expr
+    5               | condition_expr OR condition_expr .
+
+    AND  shift, and go to state 21
+    OR   shift, and go to state 22
+
+    AND       [reduce using rule 5 (condition_expr)]
+    OR        [reduce using rule 5 (condition_expr)]
+    $default  reduce using rule 5 (condition_expr)
